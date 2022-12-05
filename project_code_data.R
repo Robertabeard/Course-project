@@ -34,6 +34,11 @@ Test_cultivated_AMF <- read_excel("Test_cultivated_AMF.xlsx",
   skip = 1)
 View(Test_cultivated_AMF)
 
+
+library(readxl)
+Data12S1 <- read_excel("Data12S1.xlsx")
+View(Data12S1)
+
 ###didnt work for me? the sam names are different one has underscore
 merged_metals_amf <- merge.data.frame(cultivated_log10_As_Cd_Ni, Test_cultivated_AMF, by = "species" , all = TRUE)
 View(merged_metals_amf)
@@ -229,6 +234,11 @@ View(final_means_262)
 clipr::write_clip(final_means_262)
 
 
+merged_means_metals <- read_excel("copying the indiv means.xlsx")
+View(merged_means_metals)  
+
+
+
 #Now time to get something useful from all this work
 merged_means_metals <- data.frame(final_means_020, final_means_022, final_means_027, final_means_093, final_means_094, final_means_176, final_means_185, final_means_191, final_means_203, final_means_237, final_means_240, final_means_262) %>% reduce(merge, by = "Population")
 View(merged_means_metals) 
@@ -250,11 +260,54 @@ pca <- prcomp(X,center = TRUE,scale. = TRUE)
 summary(pca)
 
 
+pca <- prcomp(,center = TRUE,scale. = TRUE)
+summary(pca)
+
+metal_means_pca <- prcomp(merged_means_metals[,c(2:23)], center = TRUE,scale. = TRUE)
+summary(metal_means_pca)
+
+library(devtools)
+install_github("vqv/ggbiplot")
+
+library(ggbiplot)
+
+ggbiplot(metal_means_pca)
+
+ggbiplot(metal_means_pca, labels=rownames(metal_means_pca))
+
+
+```````from lab 7 
+
+
+autoplot(metal_means_pca,loadings = TRUE,loadings.label = TRUE,
+         x = 1, # which PC to plot for x-axis
+         y = 2) + # which PC to plot for y-axis
+  geom_mark_ellipse(mapping = aes(fill = As),alpha=.3,expand = unit(0.5,'mm')) + 
+  geom_point(mapping = aes(color = As),size = 3) +
+  scale_fill_manual(values = cbPalette) +
+  scale_color_manual(values = cbPalette) +
+  theme_classic()
+
+# 3D plot of selected variables
+scatter3d(x = sim_plant$defense,y = sim_plant$herbivory,z = sim_plant$fitness,
+          point.col = cbPalette[as.factor(sim_plant$TYPE)],
+          surface.alpha=.00,
+          residuals = FALSE,
+          sphere.size=1.5,
+          fogtype="none",
+          xlab = "Trait x",
+          ylab = "Trait y",
+          zlab = "Trait z")
 
 
 
-  
 
+
+
+
+
+
+`
 
 #Working with combined data sheet
 library(readr)
