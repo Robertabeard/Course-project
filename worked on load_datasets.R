@@ -11,6 +11,7 @@ library(ggforce)
 library(mgcv)
 library(easystats)
 
+
 print_cols <- function(x) cat(colnames(x),sep="\n")
 
 wild_log10 <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_log10_As_Cd_Ni.xlsx")
@@ -254,6 +255,61 @@ Cu_cor <- correlation(samcultivatedCu)
 
 
 
+`````````` taken from "improved course project" RB I am consolidated it here````
+library(tidyverse)
+library(readxl)
+library(readxl)
+library(tidyverse)
+library(janitor)
+library(rgl)
+library(car)
+library(tidyverse)
+library(ggfortify)
+library(ggforce)
+library(mgcv)
+library(easystats)
+library(MASS)
+library(gamlss)
+library(performance)
+library(ggplot2)
+library(GGally)
+
+
+print_cols <- function(x) cat(colnames(x),sep="\n")
+
+#wild metal dropped. we need to take the averages and log transform
+
+library(readxl)
+Core_metals <- read_excel("C:/Users/17178/Downloads/Core_metals (1).xlsx")
+View(Core_metals)
+
+
+#combined core data : cultivated amf, wild log 10 as cd ni, cultivated salt 
+
+library(readxl)
+CombinedCoreData <- read_excel("C:/Users/17178/Downloads/CombinedCoreData (1).xlsx")
+View(CombinedCoreData)
+
+CombinedCoreData %>% select (As: Ni, `Mean Colonization Rate (LS Mean)`) %>% correlation() %>% summary(
+) %>% plot()
+
+cor(As:Ni)
+
+
+ggpairs(CombinedCoreData[ 2:4, 6:8, 25, 34])
+
+attach(CombinedCoreData)
+nullmodel <- lm (`Mean Colonization Rate (LS Mean)` ~ 1)
+modelAs <- lm(`Mean Colonization Rate (LS Mean)`~ As, data= CombinedCoreData)
+modelCd <- lm(`Mean Colonization Rate (LS Mean)`~ Cd, data= CombinedCoreData)
+modelNi <- lm(`Mean Colonization Rate (LS Mean)`~ Ni, data= CombinedCoreData)
+
+AICctab(nullmodel, modelAs, modelCd, modelNi)
+
+`````````````````````````
+
+
+
 library(ggplot2)
 library(tidyverse)
 library(MASS)
@@ -264,95 +320,11 @@ AICctab(model_amf_Al, model_amf_Pb, model_amf_Cr,model_amf_Fe, model_amf_Mn, mod
 
 
 
-
-
-
-library(readxl)
-wild_metal <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_metal.xlsx")
-View(wild_metal)
-
-library(readxl)
-wild_nickel_dose_response <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_nickel_dose_response.xlsx")
-View(wild_nickel_dose_response)
-
-library(readxl)
-wild_nickel_summary <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_nickel_summary.xlsx")
-View(wild_nickel_summary)
-
-library(readxl)
-wild_root_traits <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_root_traits.xlsx")
-View(wild_root_traits)
-
-
-library(readxl)
-wild_salt <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/wild_salt.xlsx")
-View(wild_salt)
-
-
-library(readxl)
-cultivated_nutrients <- read_excel("C:/Users/17178/OneDrive/Desktop/FALL 2022 CLASSES/Plant genomics and biochem/COURSE PROJECT/cultivated_nutrients.xlsx")
-View(cultivated_nutrients)
-
-
-
-
-
-# sunflower genome sizes
-genome_sizes <- read.csv("data/genome_size_means.csv")
-print_cols(genome_sizes)
-
 # sunflower metabolomics
 HPLC_leaves <- read.csv("data/HPLC_leaves.csv")
 GCMS_leaves <- read.csv("data/GCMS_leaves.csv")
 GCMS_petals <- read.csv("data/GCMS_petals.csv")
 
-# sunflower GC-MS metabolomics, but with relative proportion instead of quantity
-GCMS_leaves_prop <- read.csv("data/GCMS_leaves_prop.csv")
-GCMS_petals_prop <- read.csv("data/GCMS_petals_prop.csv")
-
-# wild powdery mildew
-wild_powdery <- read_excel("data/wild_fungus.xlsx") %>% 
-  as.data.frame() %>% select(1:5) %>% 
-  filter(grepl("H.",wild_powdery$species))
-
-# wild biomass allocation
-wild_biomass <- read_excel("data/wild_biomass_alloc.xlsx",sheet = "species") %>% as.data.frame()
-
-# wild biomass allocation (population level)
-wild_biomass_pop <- read_excel("data/wild_biomass_alloc.xlsx",sheet = "pop") %>% as.data.frame()
-
-# wild floral traits
-wild_floral <- read_excel("data/wild_floral.xlsx",sheet = "Species_Means_Env") %>% as.data.frame()
-
-# wild floral traits (population level)
-wild_floral_pop <- read_excel("data/wild_floral.xlsx",sheet = "Pop_LSmeans_Env") %>% as.data.frame()
-
-# wild leaf & env traits (species level)
-wild_leaf_env <- read_excel("data/wild_LES_env_species.xlsx") %>% as.data.frame()
-
-# wild leaf & env traits (population level)
-wild_leaf_env <- read_excel("data/wild_LES_env_species.xlsx") %>% as.data.frame()
-
-# wild root (population level)wild_leaf_env_pop <- read_excel("data/wild_LES_env.xlsx") %>% as.data.frame()
-wild_root <- read_excel("data/wild_root_traits.xlsx") %>% as.data.frame()
-
-# wild salt dose response data
-wild_salt <- read_excel("data/wild_salt.xlsx") %>% as.data.frame() %>% filter(species != "HA")
-
-# wild multiple metals data -- suggest only looking at As, Cd, and Ni treatments
-wild_metals_all <- read_excel("data/wild_metal.xlsx") %>% as.data.frame()
-
-# wild multiple metals data (data dropped if leaf mass for analysis was <0.1g) -- suggest only looking at As, Cd, and Ni treatments
-wild_metals_dropped <- read_excel("data/wild_metal_dropped.xlsx") %>% as.data.frame()
-
-# wild multiple metals with log10 of As, Cd, and Ni only
-wild_log10_As_Cd_Ni <- read_excel("data/wild_log10_As_Cd_Ni.xlsx") %>% as.data.frame()
-
-# wild nickel species mean accumulation and tolerance (slope of soil Ni vs total leaf area)
-wild_Ni_summary <- read_excel("data/wild_nickel_summary.xlsx") %>% as.data.frame()
-
-# wild nickel -- full dose response curve data and traits
-wild_Ni_all <- read_excel("data/wild_nickel_dose_response.xlsx") %>% as.data.frame()
 
 
 # cultivated metals with log10 of As, Cd, and Ni only
@@ -361,34 +333,7 @@ cultivated_log10_As_Cd_Ni <- read_excel("data/wild_log10_As_Cd_Ni.xlsx") %>% as.
 # cultivated AMF
 cultivated_AMF <- read_excel("data/cultivated_AMF.xlsx",skip = 1) %>% as.data.frame()
 
-
-# cultivated drought
-cultivated_drought <- read_excel("data/cultivated_drought.xlsx") %>% 
-  pivot_wider(id_cols = Line,names_from = Treatment,values_from = `Stem Diameter (mm)`:`TRL Allocation`) %>%
-  as.data.frame()
-colnames(cultivated_drought)[grepl("Water-limited",colnames(cultivated_drought))] <- paste("Drought",gsub("_Water-limited","",colnames(cultivated_drought)[grepl("Water-limited",colnames(cultivated_drought))]))
-colnames(cultivated_drought)[grepl("Well-watered",colnames(cultivated_drought))] <- paste("Water",gsub("_Well-watered","",colnames(cultivated_drought)[grepl("Well-watered",colnames(cultivated_drought))]))
-
-# cultivated floral
-cultivated_floral <- read_excel("data/cultivated_floral.xlsx") %>% as.data.frame()
-cultivated_floral$Line <- gsub("PPN","SAM",cultivated_floral$Line)
-
-# cultivated LES, phenolics, etc
-cultivated_LES <- read_excel("data/cultivated_LES_phenolics_flav.xlsx") %>% as.data.frame()
-colnames(cultivated_LES)[1] <- "Line"
-cultivated_LES$Line <- gsub("PPN_","SAM",cultivated_LES$Line)
-
-# cultivated salt
-cultivated_salt <- read_excel("data/cultivated_salt.xlsx") %>% as.data.frame()
-colnames(cultivated_salt)[1] <- "Line"
-
-# cultivated nutrients
-cultivated_nutrients <- read_excel("data/cultivated_nutrients.xlsx") %>% as.data.frame()
-colnames(cultivated_nutrients)[1] <- "Line"
-
-
-
-
+`````````instructions 
 
 # merge multiple wild datasets together
 wild_merged <- merge(genome_sizes,wild_powdery,by = "species",all = TRUE)
@@ -397,7 +342,6 @@ wild_merged <- merge(wild_merged,wild_biomass,by = "species",all = TRUE)
 # merge multiple cultivated datasets together
 cultivated_merged <- merge(cultivated_LES,cultivated_floral,by = "Line",all = TRUE)
 cultivated_merged <- merge(cultivated_merged,cultivated_AMF,by = "Line",all = TRUE)
-
 
 
 # how to select specific variables for correlation matrix
@@ -415,5 +359,16 @@ cultivated_merged %>%
 
 # identical
 cultivated_merged %>% select(5:10,21,22)
+
+
+
+
+
+
+
+
+
+
+
 
 
