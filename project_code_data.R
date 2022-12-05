@@ -250,6 +250,12 @@ View(merged_means_metals)
 
 #Why is nothing working
 
+###########merging all the frames
+
+
+merged_metals_amf_andmeans <- merge.data.frame(merged_means_metals, merged_metals_amf, by = "species" , all = TRUE)
+View(merged_metals_amf_andmeans)
+
 
 #pca of 20
 amf_020 <- read_excel("Test_cultivated_AMF.xlsx") %>% as.data.frame(.) %>% filter(grepl("SAM_020",species))
