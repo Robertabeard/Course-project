@@ -1,5 +1,7 @@
 
 
+
+
 knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
 library(readxl)
 library(tidyverse)
@@ -234,7 +236,7 @@ View(final_means_262)
 clipr::write_clip(final_means_262)
 
 
-merged_means_metals <- read_excel("copying the indiv means.xlsx")
+merged_means_metals <- read_excel("copying the indiv meansgood.xlsx")
 View(merged_means_metals)  
 
 
@@ -252,7 +254,7 @@ View(merged_means_metals)
 
 ###########merging all the frames
 
-
+****************************************yay *************************
 merged_metals_amf_andmeans <- merge.data.frame(merged_means_metals, merged_metals_amf, by = "species" , all = TRUE)
 View(merged_metals_amf_andmeans)
 
@@ -282,6 +284,30 @@ ggbiplot(metal_means_pca)
 ggbiplot(metal_means_pca, labels=rownames(metal_means_pca))
 
 
+
+pcaofall <- prcomp(,center = TRUE,scale. = TRUE)
+summary(pcaofall)
+
+metal_means_pca_andamf <- prcomp(merged_metals_amf_andmeans[,c(2:29)], center = TRUE,scale. = TRUE)
+summary(metal_means_pca_andamf)
+
+library(devtools)
+install_github("vqv/ggbiplot")
+
+library(ggbiplot)
+
+ggbiplot(metal_means_pca_andamf)
+
+
+merged_means_metals
+
+merged_metals_amf_andmeans %>% select (As:Ni, `Mean Colonization Rate (LS Mean)`) %>% correlation() %>% summary(
+) %>% plot()
+
+
+modelamfbymetals <- lm(`Mean Colonization Rate (LS Mean)` ~ As+Ni+ Cd, data = merged_metals_amf)
+summary(modelamfbymetals)
+
 ```````from lab 7 
 
 
@@ -304,5 +330,3 @@ scatter3d(x = sim_plant$defense,y = sim_plant$herbivory,z = sim_plant$fitness,
           xlab = "Trait x",
           ylab = "Trait y",
           zlab = "Trait z")
-
-
